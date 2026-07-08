@@ -1,0 +1,33 @@
+# duotone_space.mplstyle
+
+# figure
+figure.figsize: 5, 5
+figure.dpi: 100
+
+# fonts
+font.family: sans-serif
+font.sans-serif: Source Code Pro
+font.size: 12.0
+font.weight: 800
+
+# axes
+axes.labelsize: 12.0
+axes.labelweight: 800
+axes.titlesize: 14.0
+axes.titleweight: 800
+axes.linewidth: 2.0
+axes.grid: True
+
+# ticks
+xtick.labelsize: 12.0
+ytick.labelsize: 12.0
+xtick.major.width: 2.0
+ytick.major.width: 2.0
+
+# lines
+lines.linewidth: 2.0
+
+# legend
+legend.fontsize: 12.0
+legend.frameon: True
+legend.framealpha: 1

@@ -1,0 +1,48 @@
+# duotone_space.mplstyle
+
+# figure
+figure.figsize: 5, 5
+figure.dpi: 100
+figure.facecolor: 24242e
+
+# fonts
+font.family: sans-serif
+font.sans-serif: Source Code Pro
+font.size: 12.0
+font.weight: 800
+text.color: bebeef
+
+# axes
+axes.labelsize: 12.0
+axes.labelweight: 800
+axes.titlesize: 14.0
+axes.titleweight: 800
+axes.titlecolor: bebeef
+axes.linewidth: 2.0
+axes.labelcolor: bebeef
+axes.edgecolor: bebeef
+axes.facecolor: 1d1d24
+axes.grid: True
+grid.color: 5b5b7b
+
+# ticks
+xtick.labelsize: 12.0
+ytick.labelsize: 12.0
+xtick.labelcolor: bebeef
+ytick.labelcolor: bebeef
+xtick.color: bebeef
+ytick.color: bebeef
+xtick.major.width: 2.0
+ytick.major.width: 2.0
+
+# lines
+lines.linewidth: 2.0
+axes.prop_cycle: cycler('color', ['fe7734', '8686cb', '2ca02c', 'd62728', '9467bd', '8c564b', 'e377c2', '7f7f7f', 'bcbd22', '17becf'])
+
+# legend
+legend.fontsize: 12.0
+legend.frameon: True
+legend.framealpha: 1
+legend.edgecolor: bebeef
+legend.facecolor: 24242e
+legend.labelcolor: bebeef

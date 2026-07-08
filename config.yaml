@@ -1,0 +1,33 @@
+benchmarking_threads: 
+  - 1
+  # - 8
+  # - 32
+tools:
+  - euk-singlem
+
+# workflow paths
+# dirs
+benchmark_dir: 'benchmarks'
+output_dir: 'outputs'
+metadata_dir: 'metadata'
+
+genome_fasta_paths: 'genome_rep_paths.csv'
+
+# input paths
+genome_fasta_glob_path: '/home/n9985158/phd/euk-singlem/metapackage_workflow/outputs/genomes/*/*.fasta.gz'
+singlem_metapackage: "/home/n9985158/phd/euk-singlem/metapackage_workflow/outputs/euk_packages/final_metapackage.smpkg/"
+taxonomy_map: '/home/n9985158/phd/euk-singlem/metapackage_workflow/outputs/metadata/taxonomy_mapping.tsv'
+
+# TODO: make wild card
+coverage_definitions_folder:
+  - 'coverage_definitions/simple'
+
+
+
+
+
+# Resource allocation
+resources:
+  base_mem_mb: 4000
+  base_runtime: '8h'
+  total_attempts: 3
