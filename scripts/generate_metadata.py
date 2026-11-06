@@ -44,8 +44,14 @@ def generate_metadata(genome_list, taxonomy_map, metadata_output):
     """
 
     logger.info("Reading genome list...")
-    with open(genome_list, 'r') as f:
-        genomes = [line.strip().split('\t')[1] for line in f.readlines()]
+    manifest_df = pl.read_csv(
+        genome_list,
+        separator='\t',
+        has_header=False,
+        new_columns=['accession', 'fasta_path'],
+    )
+    genomes = manifest_df['fasta_path'].to_list()
+    accessions = manifest_df['accession'].to_list()
 
     logger.info(f"Found {len(genomes)} genomes.")
     for genome in genomes:
@@ -60,7 +66,7 @@ def generate_metadata(genome_list, taxonomy_map, metadata_output):
 
     logger.info("Creating metadata dataframe...")
     df = pl.DataFrame({
-        'accession': [os.path.basename(g).split('.')[0] for g in genomes],
+        'accession': accessions,
         'genome_size': genome_sizes
         })
 
@@ -74,11 +80,12 @@ def generate_metadata(genome_list, taxonomy_map, metadata_output):
             pl.col('acc').alias('accession'), 
             pl.col('parsed_taxon_string').alias('taxonomy')]))
 
-    print(tax_df)
-    print(df)
-
     logger.info("Merging metadata with taxonomy...")
     merged_df = df.join(tax_df, on='accession', how='left', coalesce=True)
+    missing_taxonomy = merged_df.filter(pl.col('taxonomy').is_null())
+    if len(missing_taxonomy) > 0:
+        missing = missing_taxonomy['accession'].to_list()
+        raise ValueError(f"Missing taxonomy for selected genomes: {missing}")
     logger.info("Writing metadata to output...")
     merged_df.write_csv(
         metadata_output, 

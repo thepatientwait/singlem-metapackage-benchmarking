@@ -11,12 +11,7 @@ benchmark_dir: 'benchmarks'
 output_dir: 'outputs'
 metadata_dir: 'metadata'
 
-genome_fasta_paths: 'genome_rep_paths.csv'
-
-# input paths
-genome_fasta_glob_path: '/home/n9985158/phd/euk-singlem/metapackage_workflow/outputs/genomes/*/*.fasta.gz'
-singlem_metapackage: "/home/n9985158/phd/euk-singlem/metapackage_workflow/outputs/euk_packages/final_metapackage.smpkg/"
-taxonomy_map: '/home/n9985158/phd/euk-singlem/metapackage_workflow/outputs/metadata/taxonomy_mapping.tsv'
+genome_manifest: 'genome_rep_paths.tsv'
 
 # TODO: make wild card
 coverage_definitions_folder:

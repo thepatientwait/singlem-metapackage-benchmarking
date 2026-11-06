@@ -2,3 +2,6 @@ benchmarks/
 conversion_scripts/
 metadata/
 outputs/
+.snakemake/
+__pycache__/
+*.swp

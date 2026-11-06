@@ -22,6 +22,7 @@ logger_name = Path(__file__).stem
 logger = configure_logger(logger_name)
 
 import logging
+import math
 logger.setLevel(logging.DEBUG)
 
 # snakefile parameters
@@ -69,6 +70,20 @@ def load_coverage_data(coverage_file_path):
             new_columns=['otu', 'coverage']
         )
         coverage_values = coverage_df['coverage'].to_list()
+
+        if not coverage_values:
+            raise ValueError(f"Coverage file is empty: {coverage_file_path}")
+        invalid_values = [
+            value for value in coverage_values
+            if not isinstance(value, (int, float))
+            or not math.isfinite(float(value))
+            or float(value) < 0
+        ]
+        if invalid_values:
+            raise ValueError(
+                f"Coverage values must be finite and non-negative in {coverage_file_path}; "
+                f"invalid values: {invalid_values[:5]}"
+            )
         
         logger.info(f"Loaded {len(coverage_values)} coverage values")
         logger.debug(f"Coverage values: {coverage_values}")
@@ -102,6 +117,14 @@ def load_genome_metadata(genome_list_path, metadata_file_path):
         new_columns=['accession', 'fasta_path']
     )
     logger.info(f"Loaded {len(genome_df)} genome entries")
+    if genome_df['accession'].n_unique() != len(genome_df):
+        raise ValueError("Genome manifest contains duplicate accessions")
+    missing_paths = [
+        path for path in genome_df['fasta_path'].to_list()
+        if not Path(path).exists()
+    ]
+    if missing_paths:
+        raise FileNotFoundError(f"Genome FASTA files do not exist: {missing_paths[:5]}")
     
     # Load metadata
     metadata_df = pl.read_csv(
@@ -115,6 +138,9 @@ def load_genome_metadata(genome_list_path, metadata_file_path):
     # Merge datasets
     merged_df = genome_df.join(metadata_df, on='accession', how='inner')
     logger.info(f"Successfully merged {len(merged_df)} genome records")
+    if len(merged_df) != len(genome_df):
+        missing_accessions = set(genome_df['accession']) - set(merged_df['accession'])
+        raise ValueError(f"Missing metadata for selected genomes: {sorted(missing_accessions)}")
     
     # Make fasta paths absolute using pathlib
     merged_df = merged_df.with_columns(
@@ -142,12 +168,15 @@ def generate_simulation_commands(genome_metadata_df, coverage_values, art_binary
     """
     logger.info("Generating simulation commands...")
     
-    # Add coverage values to dataframe
     num_genomes = len(genome_metadata_df)
-    coverage_subset = coverage_values[:num_genomes]
+    if len(coverage_values) != num_genomes:
+        raise ValueError(
+            f"Coverage count ({len(coverage_values)}) does not match "
+            f"selected genome count ({num_genomes})"
+        )
     
     genome_metadata_with_coverage = genome_metadata_df.with_columns(
-        pl.Series('coverage', coverage_subset)
+        pl.Series('coverage', coverage_values)
     )
     
     simulation_commands = []
